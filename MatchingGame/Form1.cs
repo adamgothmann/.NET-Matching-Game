@@ -12,6 +12,13 @@ namespace MatchingGame
 {
     public partial class Form1 : Form
     {
+        public Form1()
+        {
+            InitializeComponent();
+
+            AssignIconsToSquares();
+        }
+
         //Use this Random object to choose random icons for the squares
         Random random = new Random();
 
@@ -21,9 +28,36 @@ namespace MatchingGame
             "!", "!", "N", "N", ",", ",", "k", "k",
             "b", "b", "v", "v", "w", "w", "z", "z"
         };
-        public Form1()
+
+        private void AssignIconsToSquares()
         {
-            InitializeComponent();
+            //The TableLayoutPanel has 16 labels, and the icon list has 16 icons, so an icon is pulled
+            //at random from the list and added to each label.
+            foreach (Control control in tableLayoutPanel1.Controls)
+            {
+                Label iconLabel = control as Label;
+                if (iconLabel != null)
+                {
+                    int randomNumber = random.Next(icons.Count);
+                    iconLabel.Text = icons[randomNumber];
+                    iconLabel.ForeColor = iconLabel.BackColor;
+                    icons.RemoveAt(randomNumber);
+                }
+            }
+        }
+
+        private void label_Click(object sender, EventArgs e)
+        {
+            Label clickedLabel = sender as Label;
+
+            if (clickedLabel != null)
+            {
+                //If the clicked label is black, the player clicked and icon that's already been revealed.
+                if (clickedLabel.ForeColor == Color.Black)
+                    return;
+
+                clickedLabel.ForeColor = Color.Black;
+            }
         }
     }
 }
