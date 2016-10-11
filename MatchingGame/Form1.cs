@@ -48,6 +48,10 @@ namespace MatchingGame
 
         private void label_Click(object sender, EventArgs e)
         {
+            //The timer is only on after two non=matching icons have beeen shown to the player, so ignore any clicks if the timer isr uning
+            if (timer1.Enabled == true)
+                return;
+
             Label clickedLabel = sender as Label;
 
             if (clickedLabel != null)
@@ -56,8 +60,44 @@ namespace MatchingGame
                 if (clickedLabel.ForeColor == Color.Black)
                     return;
 
-                clickedLabel.ForeColor = Color.Black;
+                if (firstClicked == null)
+                {
+                    firstClicked = clickedLabel;
+                    firstClicked.ForeColor = Color.Black;
+
+                    return;
+                }
+
+                //If the player gets this far, the timer isn't running and firstClicked isn't null,
+                //so this must be the second icon the player clicked
+                //Set its color to black.
+                secondClicked = clickedLabel;
+                secondClicked.ForeColor = Color.Black;
+
+                //If the player gets this far, the player clicked two different icons, so start the timer 
+                //(Which will wait three quarters of a second, and then hide the icons)
+                timer1.Start();
             }
+        }
+
+        //firstClicked points to the first Label control that the player clicks, but it will be null if the player hasn't clicked a label yet.
+        Label firstClicked = null;
+
+        //secondClicked points to the second Label control that theh player clicks.
+        Label secondClicked = null;
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            //Stop the timer
+            timer1.Stop();
+
+            //Hide both icons
+            firstClicked.ForeColor = firstClicked.BackColor;
+            secondClicked.ForeColor = secondClicked.BackColor;
+
+            //Reset firstClicked and secondClicked so the next time a label is clicked, the program knows it's the first click
+            firstClicked = null;
+            secondClicked = null;
         }
     }
 }
