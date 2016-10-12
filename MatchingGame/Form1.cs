@@ -64,7 +64,6 @@ namespace MatchingGame
                 {
                     firstClicked = clickedLabel;
                     firstClicked.ForeColor = Color.Black;
-
                     return;
                 }
 
@@ -73,6 +72,17 @@ namespace MatchingGame
                 //Set its color to black.
                 secondClicked = clickedLabel;
                 secondClicked.ForeColor = Color.Black;
+
+                //Check to see if the player won
+                CheckForWinner();
+
+                // if the player clicked two matching icons, keep them black and reset firstClicked and secondClicked so the player can click another icon.
+                if (firstClicked.Text == secondClicked.Text)
+                {
+                    firstClicked = null;
+                    secondClicked = null;
+                    return;
+                }
 
                 //If the player gets this far, the player clicked two different icons, so start the timer 
                 //(Which will wait three quarters of a second, and then hide the icons)
@@ -98,6 +108,26 @@ namespace MatchingGame
             //Reset firstClicked and secondClicked so the next time a label is clicked, the program knows it's the first click
             firstClicked = null;
             secondClicked = null;
+        }
+
+        private void CheckForWinner()
+        {
+            //Go through all of the labels in the TableLayoutPanel,
+            //checking each one to see if its icon is matched.
+            foreach (Control control in tableLayoutPanel1.Controls)
+            {
+                Label iconLabel = control as Label;
+
+                if (iconLabel != null)
+                {
+                    if (iconLabel.ForeColor == iconLabel.BackColor)
+                        return;
+                }
+            }
+
+            //If the loop didn't return, it didn't find any unmatched icons. The user won.
+            MessageBox.Show("You matched all the icons!", "Congratulations");
+            Close();
         }
     }
 }
